@@ -110,12 +110,15 @@ Polynomial.prototype.div = function(P) {
 Polynomial.prototype.lowByRoot = function(root) {
   let ret = new Polynomial('0', this.vari);
 
-  // TODO: 나눗셈 구현하기
+  ret.coeff[this.coeff.length - 2] = this.coeff[this.coeff.length - 1];
+  for (let i = this.coeff.length - 3; i >= 0; i--) {
+    ret.coeff[i] = this.coeff[i + 1] + root * ret.coeff[i + 1];
+  }
 
   return new Polynomial(ret.toString(), this.vari);
 }
 
 a = new Polynomial("x^2+x+1", 'x');
 b = new Polynomial("x^2-x+1", 'x');
-c = new Polynomial("-7-4x", 'x');
-console.log(a.mul(b).toString());
+c = new Polynomial("x^3-7x-6", 'x');
+console.log(c.lowByRoot(-2).toString());
