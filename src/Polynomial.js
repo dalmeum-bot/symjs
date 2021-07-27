@@ -118,7 +118,19 @@ Polynomial.prototype.lowByRoot = function(root) {
   return new Polynomial(ret.toString(), this.vari);
 }
 
+/* 다항식 미분하기
+*/
+Polynomial.prototype.diff = function() {
+  let ret = new Polynomial('0', this.vari);
+
+  for (let i = 0; i < this.coeff.length - 1; i++) {
+    ret.coeff[i] = (i + 1) * (this.coeff[i + 1] | 0);
+  }
+
+  return new Polynomial(ret.toString(), this.vari);
+}
+
 a = new Polynomial("x^2+x+1", 'x');
 b = new Polynomial("x^2-x+1", 'x');
-c = new Polynomial("x^3-7x-6", 'x');
-console.log(c.lowByRoot(-2).toString());
+c = new Polynomial("x^10+8x^3-10000000x+1", 'x');
+console.log(c.diff().toString());
