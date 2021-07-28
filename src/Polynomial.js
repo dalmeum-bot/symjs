@@ -71,7 +71,7 @@ class Polynomial {
    @param {Polynomial} P
 */
 Polynomial.prototype.add = function(P) {
-  let ret = new Polynomial('1', this.vari);
+  let ret = new Polynomial('0', this.vari);
 
   for (let i = 0; i < Math.max(this.coeff.length, P.coeff.length); i++) {
     ret.coeff[i] = this.coeff[i] + P.coeff[i];
@@ -102,7 +102,6 @@ Polynomial.prototype.mul = function(P) {
   for (let i = 0; i < this.coeff.length; i++) {
     for (let j = 0; j < P.coeff.length; j++) {
       ret.coeff[i + j] = (ret.coeff[i + j] | 0) + this.coeff[i] * P.coeff[j];
-      console.log(`this^${i}(${this.coeff[i]}) * P^${j}(${P.coeff[j]}) = ret^${i + j}(${ret.coeff[i + j]})`); //FIXME
     }
   }
 

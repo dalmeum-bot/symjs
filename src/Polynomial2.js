@@ -20,42 +20,51 @@ class Polynomial {
     this.vari = variable;
 
     // 수식 해석
-    formula = formula.replace(/ /g, '').replace(/-/g, "+-");
-    if (!formula.startsWith('+')) formula = '+' + formula + '+';
+    formula = formula.replace(/ /g, '');
+
     formula = formula
-      .replace(/[a-zA-Z](?!\^-?\d+)/g, (match) => match + "^1")
-      .replace(/(?<=\+)-?\d+(?=\+)/g, (match) => match + this.vari + "^0")
-      .replace(/(?<!-?\d+?)[a-zA-Z]/g, (match) => '1' + match);
-    if (formula.startsWith('+')) formula = formula.slice(1);
-    if (formula.endsWith('+')) formula = formula.slice(0, formula.length - 1);
+      .replace(/(?<=\+|\-|^)[a-z]+/g, match => `1${match}`)
+      .replace(/[a-z](?!\^)+/g, match => `${match}^1`)
+      .replace(/(?<!\^)(-|\+|^)\d+(?![a-z]+)/g, match => `${match}${this.vari}^0`);
+    
+    formula = formula.replace(/(?<!\^)-/g, '+-');
+    /*
+      x^-2 - x - 2 => 1x^-2 + -1x + -2 (공백은 제거)
+      계수 1 생략, 지수 1 생략, 문자 + 지수 0 생략
+    */
+
+    // if (!formula.startsWith('+')) formula = '+' + formula + '+';
+    // formula = formula
+    //   .replace(/[a-zA-Z](?!\^-?\d+)/g, (match) => match + "^1")
+    //   .replace(/(?<=\+)-?\d+(?=\+)/g, (match) => match + this.vari + "^0")
+    //   .replace(/(?<!-?\d+?)[a-zA-Z]/g, (match) => '1' + match);
+    // if (formula.startsWith('+')) formula = formula.slice(1);
+    // if (formula.endsWith('+')) formula = formula.slice(0, formula.length - 1);
 
     // 항 얻기
     this.term = formula.split('+');
+    if (this.term[0] == '') this.term = this.term.slice(1);
 
     // 계수 얻기
     try {
       this.term.forEach((element) => {
-        let match = element.match(new RegExp("([-]?\\d+)" + this.vari + "\\^([-]?\\d+)"));
-        this.coeff[Number(match[2])] = (this.coeff[Number(match[2])] | 0) + Number(match[1]);
+        let match = element.match(new RegExp("(-?\\d+)" + this.vari + "\\^(-?\\d+)"));
+        this.coeff.set(Number(match[2]), (this.coeff.get(Number(match[2])) | 0) + Number(match[1]));
       });
     } catch(e) {
       console.log(e + '\n' + e.lineNumber);
     }
-
-    for (let i = 0; i < this.coeff.length; i++) {
-      if (this.coeff[i] == null) this.coeff[i] = 0;
-    }
     
     // 차수 얻기
-    this.degree = this.coeff.length - 1;
+    this.degree = this.coeff.size - 1;
   }
 
   toString() {
     let string = new String();
 
-    for (let i = this.coeff.length - 1; i >= 0; i--) {
-      if (this.coeff[i] == 0) continue;
-      string = string.concat(`${(this.coeff[i] >= 0) ? ' + ' : ' - '}${Math.abs(this.coeff[i])}${this.vari}^${i}`);
+    for (let i = this.coeff.size - 1; i >= 0; i--) {
+      if (this.coeff.get(i) == 0) continue;
+      string = string.concat(`${(this.coeff.get(i) >= 0) ? ' + ' : ' - '}${Math.abs(this.coeff.get(i))}${this.vari}^${i}`);
     }
     string = string.trim();
     string = string.replace(new RegExp("(\\" + this.vari + "\\^0)|(\\^1(?!\\d+))", 'g'), '');
@@ -71,10 +80,10 @@ class Polynomial {
    @param {Polynomial} P
 */
 Polynomial.prototype.add = function(P) {
-  let ret = new Polynomial('1', this.vari);
+  let ret = new Polynomial('0', this.vari);
 
-  for (let i = 0; i < Math.max(this.coeff.length, P.coeff.length); i++) {
-    ret.coeff[i] = this.coeff[i] + P.coeff[i];
+  for (let i = 0; i < Math.max(this.coeff.size, P.coeff.size); i++) {
+    ret.coeff.set(i, this.coeff.get(i) + P.coeff.get(i));
   }
 
   return new Polynomial(ret.toString(), this.vari);
@@ -86,8 +95,8 @@ Polynomial.prototype.add = function(P) {
 Polynomial.prototype.sub = function(P) {
   let ret = new Polynomial('0', this.vari);
 
-  for (let i = 0; i < Math.max(this.coeff.length, P.coeff.length); i++) {
-    ret.coeff[i] = this.coeff[i] - P.coeff[i];
+  for (let i = 0; i < Math.max(this.coeff.size, P.coeff.size); i++) {
+    ret.coeff.set(i, this.coeff.get(i) - P.coeff.get(i));
   }
 
   return new Polynomial(ret.toString(), this.vari);
@@ -99,10 +108,9 @@ Polynomial.prototype.sub = function(P) {
 Polynomial.prototype.mul = function(P) {
   let ret = new Polynomial('0', this.vari);
 
-  for (let i = 0; i < this.coeff.length; i++) {
-    for (let j = 0; j < P.coeff.length; j++) {
-      ret.coeff[i + j] = (ret.coeff[i + j] | 0) + this.coeff[i] * P.coeff[j];
-      console.log(`this^${i}(${this.coeff[i]}) * P^${j}(${P.coeff[j]}) = ret^${i + j}(${ret.coeff[i + j]})`); //FIXME
+  for (let i = 0; i < this.coeff.size; i++) {
+    for (let j = 0; j < P.coeff.size; j++) {
+      ret.coeff.set(i + j, (ret.coeff.get(i + j) | 0) + this.coeff.get(i) * P.coeff.get(j));
     }
   }
 
@@ -126,9 +134,9 @@ Polynomial.prototype.div = function(P) {
 Polynomial.prototype.lowByRoot = function(root) {
   let ret = new Polynomial('0', this.vari);
 
-  ret.coeff[this.coeff.length - 2] = this.coeff[this.coeff.length - 1];
-  for (let i = this.coeff.length - 3; i >= 0; i--) {
-    ret.coeff[i] = this.coeff[i + 1] + root * ret.coeff[i + 1];
+  ret.coeff.set(this.coeff.size - 2, this.coeff.get(this.coeff.size - 1));
+  for (let i = this.coeff.size - 3; i >= 0; i--) {
+    ret.coeff.set(i, this.coeff.get(i + 1) + root * ret.coeff.get(i + 1));
   }
 
   return new Polynomial(ret.toString(), this.vari);
@@ -139,8 +147,8 @@ Polynomial.prototype.lowByRoot = function(root) {
 Polynomial.prototype.diff = function() {
   let ret = new Polynomial('0', this.vari);
 
-  for (let i = 0; i < this.coeff.length - 1; i++) {
-    ret.coeff[i] = (i + 1) * (this.coeff[i + 1] | 0);
+  for (let i = 0; i < this.coeff.size - 1; i++) {
+    ret.coeff.set(i, (i + 1) * (this.coeff.get(i + 1) | 0));
   }
 
   return new Polynomial(ret.toString(), this.vari);
@@ -194,11 +202,10 @@ Polynomial.prototype.solve = function(x_0, margin) {
     x = x_0;
     x_before = null;
   }
-  roots[roots.length] = (-1 * func.coeff[0]) / func.coeff[1];
+  roots[roots.length] = (-1 * func.coeff.get(0)) / func.coeff.get(1);
 
   return roots;
 }
 
-var f = new Polynomial("x^6 - 21x^5 + 175x^4 - 735x^3 + 1624x^2 - 1764x + 720", 'x');
-console.log(`roots of (${f.toString()})`);
-console.log(`x = ${f.solve()}`);
+var f = new Polynomial("-3+x^-2-x-2", 'x');
+console.log(f);
