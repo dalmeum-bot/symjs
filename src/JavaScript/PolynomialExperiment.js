@@ -24,9 +24,12 @@ class Polynomial {
       formula = formula.replace(/ /g, '');
 
       formula = formula
-        .replace(/(?<=\+|\-|^)[a-z]+/g, match => `1${match}`)
-        .replace(/[a-z](?!\^)+/g, match => `${match}^1`)
-        .replace(/(?<!\^)(-|\+|^)\d+(?![a-z]+)/g, match => `${match}${this.vari}^0`)
+        .replace(/(?<=\+|\-|^)[a-z]/g, match => `1${match}`)  // x^2 => 1x^2
+        .replace(/[a-z](?!\^)+/g, match => `${match}^1`)  // 3x => 3x^1
+        .replace(/(?<!\^)(-|\+|^)\d+(?![a-z/])/g, match => `${match}${this.vari}^0`)  // 4 => 4x^0
+        .replace(/(-?\d+\/-?\d+)([a-z])/g, (_, g1, g2) => `${g1}${g2}`) // 3/2x^2 => 3/2x^2
+        .replace(/\/([a-z]\^)(-?\d+)/g, (_, g1, g2) => `${g1}${-Number(g2)}`)  // 3/[x^][2] => 3x^-2
+        .replace(/(\d+)([a-z])/g, (_, g1, g2) => `${g1} ${g2}`) // 3x^2 => 3 x^2
         .replace(/(?<!\^)-/g, '+-');
     }
 
@@ -39,7 +42,7 @@ class Polynomial {
     // 계수 얻기
     if (typeof formula == 'string') {
       term.forEach((element) => {
-        let match = element.match(new RegExp("(-?\\d+)" + this.vari + "\\^(-?\\d+)"));
+        let match = element.match(new RegExp("((-?\\d+)\\/(-?\\d+))|(-?\\d+)" + this.vari + "\\^(-?\\d+)"));  // REVIEW 분수를 계수로 인식했으므로, Rational Class로 계수를 만드는 작업 필요
         this.coeff.set(Number(match[2]), (this.coeff.get(Number(match[2])) | 0) + Number(match[1]));
       });
     }
@@ -67,9 +70,6 @@ class Polynomial {
   }
 }
 
-/* 다항식 덧셈
-   @param {Polynomial} P
-*/
 Polynomial.prototype.add = function(P) {
   let ret = new Polynomial('0', this.vari);
 
@@ -81,9 +81,6 @@ Polynomial.prototype.add = function(P) {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 뺄셈
-   @param {Polynomial} P
-*/
 Polynomial.prototype.sub = function(P) {
   let ret = new Polynomial('0', this.vari);
 
@@ -95,9 +92,6 @@ Polynomial.prototype.sub = function(P) {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 곱셈
-   @param {Polynomial} P
-*/
 Polynomial.prototype.mul = function(P) {
   let ret = new Polynomial('0', this.vari);
 
@@ -110,9 +104,6 @@ Polynomial.prototype.mul = function(P) {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 나눗셈
-   @param {Polynomial} P
-*/
 Polynomial.prototype.div = function(P) {
   let ret = new Polynomial('0', this.vari);
 
@@ -121,9 +112,6 @@ Polynomial.prototype.div = function(P) {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 근으로 나누기
-   @param {Number} root : 근
-*/
 Polynomial.prototype.lowByRoot = function(root) {
   let ret = new Polynomial('0', this.vari);
 
@@ -135,8 +123,6 @@ Polynomial.prototype.lowByRoot = function(root) {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 미분하기
-*/
 Polynomial.prototype.diff = function() {
   let ret = new Polynomial('0', this.vari);
 
@@ -147,9 +133,6 @@ Polynomial.prototype.diff = function() {
   return new Polynomial(ret.coeff, this.vari);
 }
 
-/* 다항식 대입
-   @param {Number} num : 대입할 수
-*/
 Polynomial.prototype.plugIn = function(num) {
   let ret = 0;
 
@@ -160,10 +143,6 @@ Polynomial.prototype.plugIn = function(num) {
   return ret;
 }
 
-/* 다항식 근 구하기
-  @param {Number} x0 : 초깃값
-  @param {Number} margin : 허용오차범위
-*/
 Polynomial.prototype.solve = function(x_0, margin) {
   let roots = new Array();
   let func = this;
@@ -196,6 +175,5 @@ Polynomial.prototype.solve = function(x_0, margin) {
 }
 
 var f = new Polynomial(new Map([[0, -5], [1, -1], [-2, 3]]), 'x');
-var g = new Polynomial("3x^-1-x-2", 'x');
-console.log(g);
+var g = new Polynomial("3/x + 3/2x", 'x');
 console.log(g.toString());
