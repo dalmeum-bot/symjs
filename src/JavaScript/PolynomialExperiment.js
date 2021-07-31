@@ -181,11 +181,6 @@ Polynomial.prototype.solve = function(x_0, margin) {
         break;
       }
       
-      /*if (Math.abs(x - x_before) <= tole) {
-        console.log(`find root before: ${x}`); //FIXME
-        break;
-      }*/
-      
       x_before = x;
       x = x - (func.plugIn(x) / func.diff().plugIn(x));
     }

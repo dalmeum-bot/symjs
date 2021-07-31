@@ -1,20 +1,25 @@
-// sigma = (k, n, func) => {
-//   let ret = 0;
-
-//   for (k = k; k <= n; k++) {
-//     ret += func(k, n);
-//   }
-
-//   return ret;
-// };
-
 // class Polynomial {
-//   constructor(formula, variable) {
+//   isPolynomial: boolean;
+//   vari: string;
+//   coeff: Map<number, number>;
+//   maxDegree: number;
+//   minDegree: number;
+
+//   add!: (P: Polynomial) => Polynomial;
+//   sub!: (P: Polynomial) => Polynomial;
+//   mul!: (P: Polynomial) => Polynomial;
+//   div!: (P: Polynomial) => Polynomial;
+//   lowByRoot!: (root: number) => Polynomial;
+//   diff!: () => Polynomial;
+//   plugIn!: (num: number) => number;
+//   solve!: (x_0: number, margin: number) => number[];
+
+//   constructor(formula: (string | Map<number, number>), variable: string) {
 //     this.isPolynomial = true;
-//     this.vari = new String();  // 문자
-//     this.coeff = new Map(); // 계수
-//     this.maxDegree = new Number();  // 최고차수
-//     this.minDegree = new Number();  // 최저차수
+//     this.vari = '';                         // 문자
+//     this.coeff = new Map<number, number>(); // 계수
+//     this.maxDegree = 0;                     // 최고차수
+//     this.minDegree = 0;                     // 최저차수
 
 //     // 문자 얻기
 //     this.vari = variable;
@@ -32,7 +37,7 @@
 
 //     // 항 얻기
 //     if (typeof formula == 'string') {
-//       var term = formula.split('+');
+//       var term: string[] = formula.split('+');
 //       if (term[0] == '') term = term.slice(1);
 //     }
 
@@ -67,10 +72,7 @@
 //   }
 // }
 
-// /* 다항식 덧셈
-//    @param {Polynomial} P
-// */
-// Polynomial.prototype.add = function(P) {
+// Polynomial.prototype.add = function(P: Polynomial): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   for (let i = Math.min(this.minDegree, P.minDegree); i <= Math.max(this.maxDegree, P.maxDegree); i++) {
@@ -81,10 +83,7 @@
 //   return new Polynomial(ret.coeff, this.vari);
 // }
 
-// /* 다항식 뺄셈
-//    @param {Polynomial} P
-// */
-// Polynomial.prototype.sub = function(P) {
+// Polynomial.prototype.sub = function(P: Polynomial): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   for (let i = Math.min(this.minDegree, P.minDegree); i <= Math.max(this.maxDegree, P.maxDegree); i++) {
@@ -98,7 +97,7 @@
 // /* 다항식 곱셈
 //    @param {Polynomial} P
 // */
-// Polynomial.prototype.mul = function(P) {
+// Polynomial.prototype.mul = function(P: Polynomial): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   for (let i = this.minDegree; i <= this.maxDegree; i++) {
@@ -113,7 +112,7 @@
 // /* 다항식 나눗셈
 //    @param {Polynomial} P
 // */
-// Polynomial.prototype.div = function(P) {
+// Polynomial.prototype.div = function(P: Polynomial): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   // TODO: 나눗셈 구현하기
@@ -124,7 +123,7 @@
 // /* 다항식 근으로 나누기
 //    @param {Number} root : 근
 // */
-// Polynomial.prototype.lowByRoot = function(root) {
+// Polynomial.prototype.lowByRoot = function(root: number): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   ret.coeff.set(this.maxDegree - 1, this.coeff.get(this.maxDegree));
@@ -137,7 +136,7 @@
 
 // /* 다항식 미분하기
 // */
-// Polynomial.prototype.diff = function() {
+// Polynomial.prototype.diff = function(): Polynomial {
 //   let ret = new Polynomial('0', this.vari);
 
 //   for (let i = this.minDegree - 1; i < this.maxDegree; i++) {
@@ -150,7 +149,7 @@
 // /* 다항식 대입
 //    @param {Number} num : 대입할 수
 // */
-// Polynomial.prototype.plugIn = function(num) {
+// Polynomial.prototype.plugIn = function(num: number): number {
 //   let ret = 0;
 
 //   this.coeff.forEach((value, index) => {
@@ -164,7 +163,7 @@
 //   @param {Number} x0 : 초깃값
 //   @param {Number} margin : 허용오차범위
 // */
-// Polynomial.prototype.solve = function(x_0, margin) {
+// Polynomial.prototype.solve = function(x_0: number, margin: number): number[] {
 //   let roots = new Array();
 //   let func = this;
 
@@ -200,7 +199,5 @@
 //   return roots;
 // }
 
-// var f = new Polynomial(new Map([[0, -5], [1, -1], [-2, 3]]), 'x');
-// var g = new Polynomial("3x^-1-x-2", 'x');
+// var g = new Polynomial("3x^2-x-2", 'x');
 // console.log(g);
-// console.log(g.toString());
