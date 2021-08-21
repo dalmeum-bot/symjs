@@ -1,5 +1,4 @@
-var {type, isNone} = require("./util/type");
-var math = require("./util/functions");
+//var math = require("./util/functions");
 
 var Fraction = require("../class/Fraction");
 var Root = require("../class/Root");

@@ -1,7 +1,7 @@
 var {type, isNone, isSimilNum} = require("../util/type");
 
 Fraction = function () {
-  if (type(value) === "Fraction") return value;
+  if (value.type === "Fraction") return value;
   
   var value = toFraction.apply(null, Array.from(arguments));
   this.s = value[0]; // sign
@@ -64,7 +64,7 @@ toFraction = function (n, d) {
             cycle = cycle.replace(new RegExp('\\' + cycleSeparator[0] + '|\\' + cycleSeparator[1], 'g'), '');
 
             if (cycle.replace(/\d+/g, '').length > 0) throw new Error("순환마디 내용이 잘못되었습니다.");
-
+            
             numerator = Number(front[0] + front[1] + cycle) - Number(front[0] + front[1]);
             denominator = Math.pow(10, front[1].length) * (Math.pow(10, cycle.length) - 1);
             break;
@@ -171,4 +171,6 @@ Fraction.prototype = {
   }
 };
 
-module.exports = Fraction;
+//module.exports = Fraction;
+a = new Fraction('3.52[4]');
+console.log(a)

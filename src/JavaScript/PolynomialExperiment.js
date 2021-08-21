@@ -41,9 +41,10 @@ class Polynomial {
 
     // 계수 얻기
     if (typeof formula == 'string') {
-      term.forEach((element) => {
-        let match = element.match(new RegExp("((-?\\d+)\\/(-?\\d+))|(-?\\d+)" + this.vari + "\\^(-?\\d+)"));  // REVIEW 분수를 계수로 인식했으므로, Rational Class로 계수를 만드는 작업 필요
-        this.coeff.set(Number(match[2]), (this.coeff.get(Number(match[2])) | 0) + Number(match[1]));
+      term.forEach(term => {
+        console.log(term);
+        let match = term.match(new RegExp("((?:-?\\d+)\\/(?:-?\\d+)|(?:-?\\d+)) " + this.vari + "\\^(-?\\d+)"));  // REVIEW 분수를 계수로 인식했으므로, Rational Class로 계수를 만드는 작업 필요
+        this.coeff.set(+match[2], Rationalize(this.coeff.get(+match[2]) || 0).add(Rationalize(+match[1])));
       });
     }
     else {
@@ -61,7 +62,11 @@ class Polynomial {
     let string = new String();
 
     this.coeff.forEach((coeff, power) => {
-      string = `${string} ${(coeff >= 0) ? '+' : '-'} ${(Math.abs(coeff) == 1) ? ((power == 0) ? '1' : '') : Math.abs(coeff)}${(power == 1) ? `${this.vari}` : (power == 0) ? `` : `${this.vari}^${power}`}`;
+      var oper_in = coeff >= 0 ? '+' : '-';
+      var coeff_in = Math.abs(coeff) == 1 ? power == 0 ? '1' : '' : Math.abs(coeff);
+      var variAndPower_in = power == 1 ? this.vari : power == 0 ? '' : this.vari + '^' + power;
+
+      string += ` ${oper_in} ${coeff_in} ${variAndPower_in}`;
     });
     string = string.slice(1);
     if (string.startsWith("+ ")) string = string.slice(2);
@@ -173,7 +178,6 @@ Polynomial.prototype.solve = function(x_0, margin) {
 
   return roots;
 }
-
-var f = new Polynomial(new Map([[0, -5], [1, -1], [-2, 3]]), 'x');
-var g = new Polynomial("3/x + 3/2x", 'x');
+var g = new Polynomial("3/4x^2 + 3x", 'x');
+console.log(g);
 console.log(g.toString());
