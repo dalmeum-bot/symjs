@@ -33,10 +33,30 @@ Rational.prototype.toString = function() {
 }
 
 Rational.prototype.add = function(Q) {
-  if (Q.type != 'Rational') Q = Rationalize(Q);
+  if (!(Q instanceof Rational)) Q = Rationalize(Q);
 
   var l = lcm(this.d, Q.d);
   return Rationalize(l / this.d * this.getNumerator() + l / Q.d * Q.getNumerator(), l);
+}
+
+Rational.prototype.sub = function(Q) {
+  if (!(Q instanceof Rational)) Q = Rationalize(Q);
+
+  Q.s *= -1;
+  return this.add(Q);
+}
+
+Rational.prototype.mul = function(Q) {
+  if (!(Q instanceof Rational)) Q = Rationalize(Q);
+
+  return Rationalize(this.getNumerator() * Q.getNumerator(), this.getDenominator() * Q.getDenominator());
+}
+
+Rational.prototype.div = function(Q) {
+  if (!(Q instanceof Rational)) Q = Rationalize(Q);
+
+  Q = new Rational(Q.s, Q.d, Q.n);
+  return this.mul(Q);
 }
 
 Rational.prototype.abs = function() {
@@ -50,8 +70,7 @@ Rationalize = (...args) => {
   switch (args.length) {
     case 0: return Rational.ZERO;
     case 1: {
-      if (args[0] instanceof Rational) return args[0];
-      else if (args[0] == null) return Rational.ZERO;
+      if (args[0].type == 'Rational') return args[0];
       else if (String(args[0]).includes('/')) {
         var a = String(args[0]).split('/');
         return new Rational((+a[0] * +a[1]) >= 0 ? 1 : -1, Math.abs(+a[0]), Math.abs(+a[1])).reduce();
@@ -71,5 +90,6 @@ Rationalize = (...args) => {
   }
 };
 
-console.log(Rationalize(null));
-console.log(Rationalize(undefined));
+a = Rationalize('2');
+b = Rationalize('3.5');
+c = Rationalize('-4.7');
