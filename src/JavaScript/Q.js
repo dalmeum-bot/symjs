@@ -19,6 +19,10 @@ Rational.prototype.getDenominator = function() {
   return this.d;
 }
 
+Rational.prototype.getValue = function() {
+  return this.s * this.n / this.d; 
+}
+
 Rational.prototype.reduce = function() {
   var g = gcd(this.n, this.d);
   return new Rational(this.s, this.n / g, this.d / g);
@@ -35,6 +39,10 @@ Rational.prototype.add = function(Q) {
   return Rationalize(l / this.d * this.getNumerator() + l / Q.d * Q.getNumerator(), l);
 }
 
+Rational.prototype.abs = function() {
+  return new Rational(1, this.n, this.d);
+}
+
 Rational.ZERO = new Rational(1, 0, 1);
 Rational.ONE = new Rational(1, 1, 1);
 
@@ -42,7 +50,12 @@ Rationalize = (...args) => {
   switch (args.length) {
     case 0: return Rational.ZERO;
     case 1: {
-      if (args[0].type == 'Rational') return args[0];
+      if (args[0] instanceof Rational) return args[0];
+      else if (args[0] == null) return Rational.ZERO;
+      else if (String(args[0]).includes('/')) {
+        var a = String(args[0]).split('/');
+        return new Rational((+a[0] * +a[1]) >= 0 ? 1 : -1, Math.abs(+a[0]), Math.abs(+a[1])).reduce();
+      }
 
       const symbol = { open: "'", close: "'" };
       var matched = String(args[0]).match(new RegExp("([+-]?)(\\d+)(?:\\.(\\d+)?(?:\\"+symbol.open+"(\\d+)\\"+symbol.close+")?)?")).slice(1).map(e => e || '');
@@ -58,6 +71,5 @@ Rationalize = (...args) => {
   }
 };
 
-a = Rationalize("3");
-b = Rationalize("3");
-console.log(b.add(a).toString());
+console.log(Rationalize(null));
+console.log(Rationalize(undefined));
