@@ -93,3 +93,4 @@ Rationalize = (...args) => {
 a = Rationalize('2');
 b = Rationalize('3.5');
 c = Rationalize('-4.7');
+console.log(a.add(b).toString());
