@@ -194,6 +194,7 @@ Polynomial.prototype.lowByRoot = function(root) {
   let ret = new Polynomial('0', this.vari);
 
   ret.coeff.set(this.maxDegree - 1, this.coeff.get(this.maxDegree));
+  // FIXME
   for (let i = this.maxDegree - 2; i >= this.minDegree; i--) {
     ret.coeff.set(i, (this.coeff.get(i + 1) | 0) + root * (ret.coeff.get(i + 1) | 0));
   }
@@ -254,4 +255,3 @@ Polynomial.prototype.solve = function(x_0, margin) {
 var g = new Polynomial("3/9x^-2 + 3x", 'x');
 var f = new Polynomial("x^2-3x+4", 'x');
 console.log(f.toString());
-console.log(f.solve());

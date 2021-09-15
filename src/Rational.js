@@ -11,10 +11,12 @@ class Rational {
   }
 }
 
+/** @description numerator */
 Rational.prototype.getNumerator = function() {
   return this.s * this.n;
 }
 
+/** @description denominator */
 Rational.prototype.getDenominator = function() {
   return this.d;
 }
@@ -26,6 +28,10 @@ Rational.prototype.getValue = function() {
 Rational.prototype.reduce = function() {
   var g = gcd(this.n, this.d);
   return new Rational(this.s, this.n / g, this.d / g);
+}
+
+Rational.prototype.inverse = function() {
+  return new Rational(this.s, this.d, this.n);
 }
 
 Rational.prototype.toString = function() {
