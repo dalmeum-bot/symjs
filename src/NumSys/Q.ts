@@ -1,10 +1,22 @@
 interface IQ {
   numerator: number,
-  denominator: number
+  denominator: number,
+  sign: number
 }
 
 const basic_gcd = (a: number, b: number): number => (!b) ? a : basic_gcd(b, a % b);
 const basic_lcm = (a: number, b: number): number => a * b / basic_gcd(a, b);
+const toMonospace = (s: string): string => s
+  .replace(/0/g, '𝟶')
+  .replace(/1/g, '𝟷')
+  .replace(/2/g, '2')
+  .replace(/3/g, '3')
+  .replace(/4/g, '4')
+  .replace(/5/g, '5')
+  .replace(/6/g, '6')
+  .replace(/7/g, '7')
+  .replace(/8/g, '8')
+  .replace(/9/g, '9');
 
 class Q implements IQ {
   constructor(public numerator: number, public denominator: number) {
@@ -17,7 +29,14 @@ class Q implements IQ {
     this.numerator /= gcdOfND; this.denominator /= gcdOfND;
   }
 
-  toString: () => string;
+  get sign() {
+    return (this.numerator * this.denominator >= 0) ? 1 : -1;
+  };
+
+  toString: (isMixed?: boolean) => string;
+  toBeautifyString: () => Array<string>;
+  toContinuedFraction: () => string;
+
   value: () => number;
   inverse: () => Q;
 
@@ -33,8 +52,30 @@ class Q implements IQ {
   pow: (q: Q) => Q;
 }
 
-Q.prototype.toString = function (): string {
-  return `${this.numerator}/${this.denominator}`;
+Q.prototype.toString = function (isMixed: boolean): string {
+  return isMixed ?
+  `${Math.floor(this.value())} ${this.sub(new Q(Math.floor(this.value()), 1)).toString()}` :
+  `${this.numerator}/${this.denominator}`;
+};
+
+Q.prototype.toBeautifyString = function (): Array<string> {
+  let lines = ['', '', ''];
+
+  if (this.sign == -1) {
+    lines[0] += '  ';
+    lines[1] += '- ';
+    lines[2] += '  ';
+  }
+
+  lines[0] += toMonospace(String(Math.abs(this.numerator)));
+  lines[1] += '━'.repeat(Math.max(String(Math.abs(this.numerator)).length, String(Math.abs(this.denominator)).length));
+  lines[2] += toMonospace(String(Math.abs(this.denominator)));
+
+  return lines;
+};
+
+Q.prototype.toContinuedFraction = function (): string {
+  return '';
 };
 
 Q.prototype.value = function (): number {
@@ -81,6 +122,10 @@ Q.prototype.mod = function (q: Q): Q {
   return new Q((this.numerator * (lcmOfDD / this.denominator)) % (q.numerator * (lcmOfDD / q.denominator)), lcmOfDD);
 };
 
-const q1: Q = new Q(1, -3);
-const q2: Q = new Q(1, 3);
-console.log(q1.div(q2).toString());
+// Q.prototype.pow = function (z: Z): Q {
+
+// };
+
+const q1: Q = new Q(17, -314);
+const q2: Q = new Q(7, 4);
+console.log(q1.toBeautifyString().join('\n'));
