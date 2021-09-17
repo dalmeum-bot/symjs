@@ -1,3 +1,5 @@
+import { Z } from 'Z.js';
+
 interface IQ {
   numerator: number,
   denominator: number,
@@ -18,8 +20,11 @@ const toMonospace = (s: string): string => s
   .replace(/8/g, '8')
   .replace(/9/g, '9');
 
-class Q implements IQ {
-  constructor(public numerator: number, public denominator: number) {
+export class Q implements IQ {
+  numerator: number;
+  denominator: number;
+
+  constructor(numerator: number, denominator: number) {
     if (denominator == 0) throw "Divide By Zero Error";
 
     this.numerator = Math.abs(numerator) * (((numerator * denominator) > 0) ? 1 : -1);
@@ -49,7 +54,7 @@ class Q implements IQ {
   mul: (q: Q) => Q;
   div: (q: Q) => Q;
   mod: (q: Q) => Q;
-  pow: (q: Q) => Q;
+  pow: (z: Z) => Q;
 }
 
 Q.prototype.toString = function (isMixed: boolean): string {
@@ -122,9 +127,9 @@ Q.prototype.mod = function (q: Q): Q {
   return new Q((this.numerator * (lcmOfDD / this.denominator)) % (q.numerator * (lcmOfDD / q.denominator)), lcmOfDD);
 };
 
-// Q.prototype.pow = function (z: Z): Q {
-
-// };
+Q.prototype.pow = function (z: Z): Q {
+  return new Q(1, 1);
+};
 
 const q1: Q = new Q(17, -314);
 const q2: Q = new Q(7, 4);
