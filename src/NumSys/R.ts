@@ -2,7 +2,7 @@ interface IR {
   formula: string
 }
 
-class R implements IR {
+export class R implements IR {
   constructor(public formula: string) {
     this.formula = formula;
   }
