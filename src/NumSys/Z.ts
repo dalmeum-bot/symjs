@@ -81,7 +81,7 @@ export class Z implements IZ {
   }
 
   negate (): Z {
-
+    return new Z(this.ints, -this.sign);
   }
 
   add (z: Z): Z {
