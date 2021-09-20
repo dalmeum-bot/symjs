@@ -162,9 +162,9 @@ export class Q implements IQ {
     return new Q((this.numerator * (lcmOfDD / this.denominator)) % (q.numerator * (lcmOfDD / q.denominator)), lcmOfDD);
   };
 
-  // pow (z: Z): Q {
-  //   return new Q(1, 1);
-  // }; // fixme
+  pow (z: Z): Q {
+    return new Q(this.numerator.pow(z), this.denominator.pow(z));
+  };
 }
 
 const q1: Q = new Q(17, -314);
