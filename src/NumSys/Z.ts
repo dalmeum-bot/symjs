@@ -116,8 +116,10 @@ export class Z implements IZ {
     return new Z(r, this.sign);
   }
   
+  /*
+  */
   sub (z: Z): Z {
-
+    
   }
 
   mul (z: Z): Z {
