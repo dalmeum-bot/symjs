@@ -56,8 +56,10 @@ class FVariable {
 }
 
 class FConstant {
-  constructor(name, value) {
+  constructor(name, sign, value) {
     this.name = name;
+    this.sign = sign;
+    this.coeff = 0;
     this.value = value;
   }
 }
@@ -74,9 +76,23 @@ Formula.prototype.defineVariable = function (name, value) {
   this.vars[name] = new FVariable(name, value);
 };
 
-Formula.prototype.defineConstant = function (name, value) {
-  this.consts[name] = new FConstant(name, value);
+Formula.prototype.defineConstant = function (name, sign, value) {
+  this.consts[name] = new FConstant(name, sign, value);
 };
+
+f = new Formula("1 + 2 * 3 - 4 + gcd(3, 6, 12) * pi");  // 수식 정의
+
+f.toPostFixNotation() // 후위표기식으로 변환 (보여주기용)
+[1, 2, 3, "*", "+", 4, "-", "gcd(3,6,12)", "pi", "*", "+"]
+
+// 실제 연산 처리 // todo - 상수의 연산, 계수 처리 어케하지
+[1, 2, 3, f.opers["*"], f.opers["+"], 4, f.opers["-"], [f.funcs["gcd"].execute(3, 6, 12), f.consts["pi"]], f.opers["*"], f.opers["+"]]
+[1, 2, 3, f.opers["*"], f.opers["+"], 4, f.opers["-"], [3, f.consts["pi"]], f.opers["*"], f.opers["+"]]
+[1, 6, f.opers["+"], 4, f.opers["-"], [3, f.consts["pi"]], f.opers["*"], f.opers["+"]]
+[7, 4, f.opers["-"], [3, f.consts["pi"]], f.opers["*"], f.opers["+"]]
+[3, [3, f.consts["pi"]], f.opers["*"], f.opers["+"]]
+[3, "3π", f.opers["+"]]
+["3 + 3π"]
 
 f.defineOperator( // operator는 1, 2항 연산자를 기준으로 한다.
   '+', // 연산자 기호
@@ -117,16 +133,9 @@ f.defineVariable(
 
 f.defineConstant(
   "pi",
+  "π",
   3.14159265358979
 );
-
-f = new Formula("1 + 2 * 3 - 4 + gcd(3, 6, 12) * pi");  // 수식 정의
-
-f.toPostFixNotation() // 후위표기식으로 변환 (보여주기용)
-[1, 2, 3, "*", "+", 4, "-", "gcd(3,6,12)", "pi", "*", "+"]
-
-// 실제 연산 처리에 쓰이는 후위표기식 변환
-let arr = [1, 2, 3, f.opers["*"], f.opers["+"], 4, f.opers["-"], f.funcs["gcd"].execute(3, 6, 12), f.consts["pi"], f.opers["*"], f.opers["+"]]
 
 arr.forEach(e => {
   if (e instanceof Number) {
