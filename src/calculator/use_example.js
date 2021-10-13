@@ -6,7 +6,7 @@ const Direction = {
 
 class Formula {
   constructor(formula) {
-    this.formula = formula;
+    this.formula = formula.replace(/ /g, '');
 
     this.opers = {};
     this.funcs = {};

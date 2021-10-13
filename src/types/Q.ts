@@ -1,4 +1,4 @@
-// import { Z } from 'Z'; // fixme
+import { Z } from './Z';
 
 interface IQ {
   /* 분자 */
@@ -163,10 +163,23 @@ export class Q implements IQ {
   };
 
   pow (z: Z): Q {
-    return new Q(this.numerator.pow(z), this.denominator.pow(z));
+    return new Q(1, 1); // todo
   };
 }
 
-const q1: Q = new Q(17, -314);
-const q2: Q = new Q(7, 4);
-console.log(q1.toBeautifyString(true));
+function Rationalize (parse: (number | string)): Q {
+  parse = (typeof parse != "string") ? String(parse) : parse;
+
+  const matched = (parse.match(/(-?\d+)(?:.(\d+)(?:'(\d+)')?)?/) || []).slice(1).map(e => e || '');
+  const FRONT = matched[0];
+  const IN = matched[1];
+  const REPEAT = matched[2] || '0';
+
+  return new Q(
+    Number(FRONT + IN + REPEAT) - Number(FRONT + IN),
+    Math.pow(10, IN.length) * (Math.pow(10, REPEAT.length) - 1)
+  );
+}
+
+const q1: Q = Rationalize("0.'142857'");
+console.log(q1.toString());
