@@ -53,7 +53,7 @@ interface IQ {
   mod(q: Q): Q,
 
   /* 거듭제곱 */
-  //pow(z: Z): Q // todo
+  pow(z: Z): Q
 }
 
 const basic_gcd = (a: number, b: number): number => (!b) ? a : basic_gcd(b, a % b);

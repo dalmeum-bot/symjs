@@ -1,3 +1,5 @@
+import { Q } from './Q'
+
 interface IZ {
   /* 부호 */
   sign: number,
@@ -36,40 +38,47 @@ interface IZ {
   pow(z: Z): Z,
 }
 
-enum consts {
-  BASE = 1e7,
-  BASE_DIGIT = 7,
-  SEPARATOR = ''
-}
+const BASE_DIGIT = 7;
+const SEPARATOR = ' ';
+var BASE = Math.pow(10, BASE_DIGIT);
 
+// TODO base N 구현 (base -N 도 가능해야함)
+// TODO sign 자동 추론 (속도 보고 결정해)
 export class Z implements IZ {
   sign: number;
   ints: number[];
+  base: number;
 
-  constructor(input: (string | number[]), sign: number) {
-    this.sign = sign / Math.abs(sign);   
-    
-    if (typeof input == 'string') {
-      input = input.replace(/ |\+|-/g, ''); 
+  constructor(number: (string | number | number[]), sign?: number, base?: number) {
+    this.sign = (sign == null) ? 1 : sign / Math.abs(sign);
+    this.base = (base == null) ? 10 : base; 
+
+    BASE = Math.pow(base, BASE_DIGIT);
+        
+    if (number instanceof String || number instanceof Number) {
+      if (!Number.isInteger(Number(number))) throw new Error('Z 에는 정수만 가능');
+
+      if (number instanceof Number) number = String(number);
+      number = number.replace(/ |\+|-/g, ''); 
 
       let chucks = new Array<string>();    
-      while (input.length != 0) {
-        let chucklen: number = (input.length % consts.BASE_DIGIT == 0) ? consts.BASE_DIGIT : input.length % consts.BASE_DIGIT;
-        chucks.push(input.slice(0, chucklen));
-        input = input.slice(chucklen);
+      while (number.length != 0) {
+        let chucklen: number = (number.length % BASE_DIGIT == 0) ? BASE_DIGIT : number.length % BASE_DIGIT;
+        chucks.push(number.slice(0, chucklen));
+        number = number.slice(chucklen);
       }
 
       this.ints = chucks.map(Number).reverse();
     }
-    else if (typeof input == 'object') {
-      this.ints = input;
+    else if (number instanceof Array) {
+      this.ints = number;
     }
   }
 
   toString (): string {
     let r = '';
     this.ints.forEach(e => r = e + r);
-    return r.replace(/\B(?=(\d{3})+(?!\d))/g, consts.SEPARATOR);
+    return r.replace(/\B(?=(\d{3})+(?!\d))/g, SEPARATOR);
   }
 
   isPositive (): boolean {
@@ -100,14 +109,14 @@ export class Z implements IZ {
   
     for (i = 0; i < b.length; i++) {
       sum = a[i] + b[i] + carry;
-      carry = (sum >= consts.BASE) ? 1 : 0;
-      r[i] = sum - carry * consts.BASE;
+      carry = (sum >= BASE) ? 1 : 0;
+      r[i] = sum - carry * BASE;
     }
   
     while (i < a.length) {
       sum = a[i] + carry;
-      carry = (sum == consts.BASE) ? 1 : 0;
-      r[i] = sum - carry * consts.BASE;
+      carry = (sum == BASE) ? 1 : 0;
+      r[i] = sum - carry * BASE;
       i++;
     }
   
@@ -116,29 +125,28 @@ export class Z implements IZ {
     return new Z(r, this.sign);
   }
   
-  /*
-  */
   sub (z: Z): Z {
-    
+    return new Z(1, +1);
   }
 
   mul (z: Z): Z {
-
+    return new Z(1, +1);
   }
   
   div (z: Z): Z {
-
+    return new Z(1, +1);
   }
 
   mod (z: Z): Z {
-
+    return new Z(1, +1);
   }
 
-  pow (z: Z): Z {
-
+  pow (n: Z): Z {
+    if (n.sign < 0) return new Z(0);
+    
   }
 }
 
-const z1 = new Z("232", 1);
-const z2 = new Z("339", 1);
+const z1 = new Z(232);
+const z2 = new Z(339);
 console.log(`z1 = ${z1.toString()}\nz2 = ${z2.toString()}\nz1 + z2 = ${z1.add(z2).toString()}`);
