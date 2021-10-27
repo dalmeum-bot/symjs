@@ -1,11 +1,9 @@
-import { Q } from './Q'
-
 interface IZ {
   /* 부호 */
   sign: number,
 
   /* 자릿수 배열 */
-  ints: number[],
+  _: number[],
 
   /* 출력 */
   toString(): string,
@@ -46,7 +44,7 @@ var BASE = Math.pow(10, BASE_DIGIT);
 // TODO sign 자동 추론 (속도 보고 결정해)
 export class Z implements IZ {
   sign: number;
-  ints: number[];
+  _: number[];
   base: number;
 
   constructor(number: (string | number | number[]), sign?: number, base?: number) {
@@ -68,16 +66,16 @@ export class Z implements IZ {
         number = number.slice(chucklen);
       }
 
-      this.ints = chucks.map(Number).reverse();
+      this._ = chucks.map(Number).reverse();
     }
     else if (number instanceof Array) {
-      this.ints = number;
+      this._ = number;
     }
   }
 
   toString (): string {
     let r = '';
-    this.ints.forEach(e => r = e + r);
+    this._.forEach(e => r = e + r);
     return r.replace(/\B(?=(\d{3})+(?!\d))/g, SEPARATOR);
   }
 
@@ -90,7 +88,7 @@ export class Z implements IZ {
   }
 
   negate (): Z {
-    return new Z(this.ints, -this.sign);
+    return new Z(this._, -this.sign);
   }
 
   add (z: Z): Z {
@@ -98,8 +96,8 @@ export class Z implements IZ {
     if (this.isNegative() && z.isPositive()) return z.sub(this);
     
     let a, b;
-    if (this.ints.length < z.ints.length) [a, b] = [z.ints, this.ints];
-    else [a, b] = [this.ints, z.ints];
+    if (this._.length < z._.length) [a, b] = [z._, this._];
+    else [a, b] = [this._, z._];
   
     let r = new Array<number>(a.length);
   
@@ -126,7 +124,12 @@ export class Z implements IZ {
   }
   
   sub (z: Z): Z {
-    return new Z(1, +1);
+    if (this.isPositive() && z.isNegative()) return this.add(z);
+    if (this.isNegative() && z.isPositive()) return z.add(this);
+
+    let a, b;
+
+    return new Z(0);
   }
 
   mul (z: Z): Z {
@@ -144,6 +147,7 @@ export class Z implements IZ {
   pow (n: Z): Z {
     if (n.sign < 0) return new Z(0);
     
+    return new Z(0);
   }
 }
 

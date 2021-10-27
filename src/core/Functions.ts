@@ -1,4 +1,4 @@
-import { Z } from 'Z';
+import { Z } from '';
 import { Q } from 'Q';
 import { R } from 'R';
 

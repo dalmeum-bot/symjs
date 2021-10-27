@@ -254,4 +254,4 @@ Polynomial.prototype.solve = function(x_0, margin) {
 }
 var g = new Polynomial("3/9x^-2 + 3x", 'x');
 var f = new Polynomial("x^2-3x+4", 'x');
-console.log(f.toString());
+console.log(f.diff().toString());
