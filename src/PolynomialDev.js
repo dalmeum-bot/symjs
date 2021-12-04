@@ -135,6 +135,7 @@ class Polynomial {
     let string = new String();
 
     this.coeff.forEach((coeff, power) => {
+      console.log(coeff,power);
       var oper_in = coeff.getValue() >= 0 ? '+' : '-';
       var coeff_in = Math.abs(coeff.getValue()) == 1 ? power == 0 ? '1' : '' : coeff.abs().toString();
       var variAndPower_in = power == 1 ? this.vari : power == 0 ? '' : this.vari + '^' + power;
@@ -252,6 +253,16 @@ Polynomial.prototype.solve = function(x_0, margin) {
 
   return roots;
 }
-var g = new Polynomial("3/9x^-2 + 3x", 'x');
-var f = new Polynomial("x^2-3x+4", 'x');
-console.log(f.diff().toString());
+// 테스트한거
+var p1 = new Polynomial("x^6 - 21x^5 + 175x^4 - 735x^3 + 1624x^2 - 1764x + 720", 'x');
+console.log(`${p1.toString()} == 0`);
+console.log(`x = ${JSON.stringify(p1.solve())}\n`);
+
+var p2 = new Polynomial("x^3 - 3x^2", 'x');
+var p3 = new Polynomial("x^6 + 7", 'x');
+console.log(`d/dx (${p2.toString()}) = ${p2.diff()}`);
+console.log(`d/dx (${p3.toString()}) = ${p3.diff()}\n`);
+
+var p4 = new Polynomial("x^2 + x + 5", 'x');
+var p5 = new Polynomial("x^3 + 1", 'x');
+console.log(`(${p4.toString()}) * (${p5.toString()}) = ${p4.mul(p5).toString()}`);

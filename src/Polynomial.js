@@ -1,13 +1,3 @@
-sigma = (k, n, func) => {
-  let ret = 0;
-
-  for (k = k; k <= n; k++) {
-    ret += func(k, n);
-  }
-
-  return ret;
-};
-
 class Polynomial {
   constructor(formula, variable) {
     this.isPolynomial = true;
@@ -158,7 +148,7 @@ Polynomial.prototype.plugIn = function(num) {
   return ret;
 }
 
-/* 다항식 근 구하기
+/** 다항식 근 구하기
   @param {Number} x0 : 초깃값
   @param {Number} margin : 허용오차범위
 */
@@ -198,6 +188,15 @@ Polynomial.prototype.solve = function(x_0, margin) {
   return roots;
 }
 
-var f = new Polynomial("x^6 - 21x^5 + 175x^4 - 735x^3 + 1624x^2 - 1764x + 720", 'x');
-console.log(`roots of (${f.toString()})`);
-console.log(`x = ${f.solve()}`);
+var p1 = new Polynomial("x^6 - 21x^5 + 175x^4 - 735x^3 + 1624x^2 - 1764x + 721", 'x');
+console.log(`${p1.toString()} == 0`);
+console.log(`x = ${JSON.stringify(p1.solve())}\n`);
+
+var p2 = new Polynomial("x^3 - 3x^2", 'x');
+var p3 = new Polynomial("x^6 + 7", 'x');
+console.log(`d/dx (${p2.toString()}) = ${p2.diff()}`);
+console.log(`d/dx (${p3.toString()}) = ${p3.diff()}\n`);
+
+var p4 = new Polynomial("x^2 + x + 5", 'x');
+var p5 = new Polynomial("x^3 + 1", 'x');
+console.log(`(${p4.toString()}) * (${p5.toString()}) = ${p4.mul(p5).toString()}`);
