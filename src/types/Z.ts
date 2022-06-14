@@ -147,10 +147,12 @@ export class Z implements IZ {
   pow (n: Z): Z {
     if (n.sign < 0) return new Z(0);
     
-    return new Z(0);
+    // for (let i = new Z(0); i < ; i.add(1)) {
+
+    // }
   }
 }
 
 const z1 = new Z(232);
 const z2 = new Z(339);
-console.log(`z1 = ${z1.toString()}\nz2 = ${z2.toString()}\nz1 + z2 = ${z1.add(z2).toString()}`);
+console.log(`z1 = ${z1.toString()}\nz2 = ${z2.toString()}\nz1 - z2 = ${z1.sub(z2).toString()}`);
