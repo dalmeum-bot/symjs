@@ -1,1 +1,1 @@
-# alzebra
+math library using javascript
